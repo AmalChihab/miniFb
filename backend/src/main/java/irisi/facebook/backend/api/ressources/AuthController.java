@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+// authentication controller
 
 @RestController
 @RequestMapping("/api/auth")
@@ -37,10 +38,12 @@ public class AuthController {
 
         Optional<FBUser> userOptional = userRepository.findByUserName(loginDto.getUserName());
 
+        //checking if the user is found
         if (userOptional.isEmpty()) {
             return new ResponseEntity<>("User not found!", HttpStatus.BAD_REQUEST);
         }
 
+        // if the user is found we check if the entered password matches the actual one in our database
         FBUser user = userOptional.get();
 
         if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
@@ -57,13 +60,13 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserCommand signUpDto){
 
-        // add check for username exists in a DB
+        // check for username exists in a DB
         if(userRepository.existsByUserName(signUpDto.getUserName())){
             return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
         }
 
 
-        // create user object
+        // if the user doesn't exist, we can create our user object now
         FBUser user = new FBUser();
         user.setUserName(signUpDto.getUserName());
         user.setUserPassword(passwordEncoder.encode(signUpDto.getUserPassword()));
