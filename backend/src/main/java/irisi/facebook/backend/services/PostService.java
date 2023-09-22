@@ -2,6 +2,7 @@ package irisi.facebook.backend.services;
 
 import irisi.facebook.backend.domain.command.PostCommand;
 import irisi.facebook.backend.domain.command.UserCommand;
+import irisi.facebook.backend.domain.mappers.PostMapper;
 import irisi.facebook.backend.domain.model.Post;
 import irisi.facebook.backend.domain.repositories.PostRepository;
 import irisi.facebook.backend.domain.representations.PostRepresentation;

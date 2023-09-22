@@ -4,6 +4,7 @@ package irisi.facebook.backend.api.ressources;
 import irisi.facebook.backend.api.common.ResourcePath;
 import irisi.facebook.backend.domain.command.PostCommand;
 import irisi.facebook.backend.domain.representations.PostRepresentation;
+import irisi.facebook.backend.services.PostService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
