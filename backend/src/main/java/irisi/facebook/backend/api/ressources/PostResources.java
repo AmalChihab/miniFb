@@ -1,6 +1,5 @@
 package irisi.facebook.backend.api.ressources;
 
-
 import irisi.facebook.backend.api.common.ResourcePath;
 import irisi.facebook.backend.domain.command.PostCommand;
 import irisi.facebook.backend.domain.representations.PostRepresentation;
@@ -52,4 +51,5 @@ public class PostResources {
     }
 
 }
+
 
