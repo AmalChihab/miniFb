@@ -2,7 +2,7 @@
 
 function App() {
   return (
-    <div className="App">
+    <div className=" ml-64 text-3xl font-bold underline">
        hello world
     </div>
   );
