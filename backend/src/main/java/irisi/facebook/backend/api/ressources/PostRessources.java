@@ -1,9 +1,9 @@
-package fstg.irisi.miniFb.api.ressources;
+package irisi.facebook.backend.api.ressources;
 
-import fstg.irisi.miniFb.api.common.ResourcePath;
-import fstg.irisi.miniFb.domain.command.PostCommand;
-import fstg.irisi.miniFb.domain.representations.PostRepresentation;
-import fstg.irisi.miniFb.services.PostService;
+
+import irisi.facebook.backend.api.common.ResourcePath;
+import irisi.facebook.backend.domain.command.PostCommand;
+import irisi.facebook.backend.domain.representations.PostRepresentation;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
