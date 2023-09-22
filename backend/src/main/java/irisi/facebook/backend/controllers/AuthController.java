@@ -1,2 +1,19 @@
-package irisi.facebook.backend.controllers;public class AuthController {
+package irisi.facebook.backend.controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class AuthController {
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/private/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
 }
+
