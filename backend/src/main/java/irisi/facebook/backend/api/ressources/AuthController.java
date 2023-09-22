@@ -1,6 +1,6 @@
 package irisi.facebook.backend.api.ressources;
 
-import fstg.irisi.miniFb.domain.command.UserCommand;
+import irisi.facebook.backend.domain.command.UserCommand;
 import irisi.facebook.backend.domain.model.FBUser;
 import irisi.facebook.backend.domain.repositories.FbUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
