@@ -1,4 +1,4 @@
-package fstg.irisi.miniFb.domain.command;
+package irisi.facebook.backend.domain.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
