@@ -17,6 +17,7 @@ const ReactionService = {
   getReactionByPostId: (postId) => {
     return axios.get(`${API_BASE_URL}/${postId}`);
   },
+
 };
 
 export default ReactionService;

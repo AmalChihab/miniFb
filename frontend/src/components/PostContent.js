@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import ReactionService from '../services/ReactionService';
@@ -9,16 +9,39 @@ const PostContent = ({ post, user }) => {
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
 
+
+  // Load user reactions from local storage when the component mounts
+  useEffect(() => {
+    const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+    
+    if (userReactions[post.id]) {
+      const { like, dislike } = userReactions[post.id];
+      
+      if (like) {
+        setLiked(true);
+      }
+      if (dislike) {
+        setDisliked(true);
+      }
+    }
+  }, [post.id]);
+
+
   const handleLikeClick = () => {
     setLiked(!liked);
     if (disliked) {
       setDisliked(false);
     }
-    
+
+    // Update user reactions in local storage
+    const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+    userReactions[post.id] = { like: true, dislike: false };
+    localStorage.setItem('userReactions', JSON.stringify(userReactions));
+
     // Make an API request to create a like reaction
     ReactionService.createReaction({
-      postId: post.id, 
-      type: 'LIKE', 
+      postId: post.id,
+      type: 'LIKE',
       user: JSON.parse(localStorage.getItem('user')),
     })
       .then((response) => {
@@ -28,17 +51,22 @@ const PostContent = ({ post, user }) => {
         console.log("error");
       });
   };
-  
+
   const handleDislikeClick = () => {
     setDisliked(!disliked);
     if (liked) {
       setLiked(false);
     }
-  
+
+    // Update user reactions in local storage
+    const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+    userReactions[post.id] = { like: false, dislike: true };
+    localStorage.setItem('userReactions', JSON.stringify(userReactions));
+
     // Make an API request to create a dislike reaction
     ReactionService.createReaction({
       postId: post.id,
-      type: 'DISLIKE', 
+      type: 'DISLIKE',
       user: JSON.parse(localStorage.getItem('user')),
     })
       .then((response) => {
