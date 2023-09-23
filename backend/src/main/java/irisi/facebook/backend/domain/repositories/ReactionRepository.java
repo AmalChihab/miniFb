@@ -11,4 +11,5 @@ import java.util.List;
 public interface ReactionRepository extends JpaRepository<Reaction,Integer> {
     @Query("SELECT r FROM Reaction r WHERE r.postReaction.postId = :postId")
     List<Reaction> findReactionByPostId(int postId);
+
 }
