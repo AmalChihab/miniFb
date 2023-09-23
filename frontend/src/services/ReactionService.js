@@ -14,8 +14,24 @@ const ReactionService = {
     return axios.delete(`${API_BASE_URL}/${reactionId}`);
   },
 
+  updateReactionType: (reactionId, reactionCommand) => {
+    return axios.put(`${API_BASE_URL}/${reactionId}`, reactionCommand);
+  },
+
   getReactionByPostId: (postId) => {
     return axios.get(`${API_BASE_URL}/${postId}`);
+  },
+
+  getNbrLikesByPostId: (postId) => {
+    return axios.get(`${API_BASE_URL}/nbrLikes/${postId}`);
+  },
+  
+  getNbrDislikesByPostId: (postId) => {
+    return axios.get(`${API_BASE_URL}/nbrDislikes/${postId}`);
+  },
+
+  getReactionIdByPostIdAndUserId: (postId, userId) => {
+    return axios.get(`${API_BASE_URL}/reactionId?postId=${postId}&userId=${userId}`);
   },
 
 };

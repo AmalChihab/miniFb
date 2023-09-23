@@ -8,74 +8,201 @@ const PostContent = ({ post, user }) => {
   const [disliked, setDisliked] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
 
 
-  // Load user reactions from local storage when the component mounts
+  
   useEffect(() => {
-    const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-    
-    if (userReactions[post.id]) {
-      const { like, dislike } = userReactions[post.id];
-      
-      if (like) {
-        setLiked(true);
-      }
-      if (dislike) {
-        setDisliked(true);
-      }
+    // Fetch the number of likes/dislikes for this post
+    ReactionService.getNbrLikesByPostId(post.id)
+      .then((response) => {
+        setLikes(response.data); // Update the state with the number of likes
+      })
+      .catch((error) => {
+        console.log("Error fetching likes:", error);
+      });
+
+    ReactionService.getNbrDislikesByPostId(post.id)
+      .then((response) => {
+        setDislikes(response.data); // Update the state with the number of dislikes
+      })
+      .catch((error) => {
+        console.log("Error fetching dislikes:", error);
+      });
+
+    // Load user reactions from local storage when the component mounts
+    const storedReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+    const userPostReactions = storedReactions[post.id] || {};
+
+    // Check if the user has already liked or disliked the post
+    if (userPostReactions.like) {
+      setLiked(true);
+    } else if (userPostReactions.dislike) {
+      setDisliked(true);
     }
   }, [post.id]);
 
-
   const handleLikeClick = () => {
-    setLiked(!liked);
-    if (disliked) {
-      setDisliked(false);
+    if (!liked) {
+      // If the user is switching from dislike to like, update the existing reaction
+      if (disliked) {
+        // First, get the existing reactionId using getReactionIdByPostIdAndUserId
+        ReactionService.getReactionIdByPostIdAndUserId(post.id, JSON.parse(localStorage.getItem('user')).userId)
+          .then((response) => {
+            const reactionId = response.data;
+            
+            // Make an API request to update the existing reaction
+            ReactionService.updateReactionType(reactionId, {
+              postId: post.id,
+              type: 'LIKE',
+              user: JSON.parse(localStorage.getItem('user')),
+            })
+              .then(() => {
+                setLiked(true);
+                setDisliked(false);
+
+                // Update user reactions in local storage
+                const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+                userReactions[post.id] = { like: true, dislike: false };
+                localStorage.setItem('userReactions', JSON.stringify(userReactions));
+  
+                // Update the likes and dislikes count in state
+                setLikes(likes + 1);
+                if(dislikes > 0){
+                  setDislikes(dislikes - 1);
+                }
+              })
+              .catch((error) => {
+                console.log("Error updating reaction:", error);
+              });
+          })
+          .catch((error) => {
+            console.log("Error getting existing reactionId:", error);
+          });
+      } else {
+        // Create a new like reaction
+        // Update the state to reflect that the user has liked the post
+        setLiked(true);
+        setDisliked(false);
+  
+        // Update user reactions in local storage
+        const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+        userReactions[post.id] = { like: true, dislike: false };
+        localStorage.setItem('userReactions', JSON.stringify(userReactions));
+  
+        // Update the likes count in state
+        setLikes(likes + 1);
+  
+        // Make an API request to create a like reaction
+        ReactionService.createReaction({
+          postId: post.id,
+          type: 'LIKE',
+          user: JSON.parse(localStorage.getItem('user')),
+        })
+          .then((response) => {
+            console.log("like saved");
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log("error");
+          });
+      }
     }
-
-    // Update user reactions in local storage
-    const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-    userReactions[post.id] = { like: true, dislike: false };
-    localStorage.setItem('userReactions', JSON.stringify(userReactions));
-
-    // Make an API request to create a like reaction
-    ReactionService.createReaction({
-      postId: post.id,
-      type: 'LIKE',
-      user: JSON.parse(localStorage.getItem('user')),
-    })
-      .then((response) => {
-        console.log("like saved");
-      })
-      .catch((error) => {
-        console.log("error");
-      });
   };
+  
 
   const handleDislikeClick = () => {
-    setDisliked(!disliked);
-    if (liked) {
-      setLiked(false);
+    if (!disliked) {
+      // If the user is switching from like to dislike, update the existing reaction
+      if (liked) {
+        // First, get the reactionId using getReactionIdByPostIdAndUserId
+        ReactionService.getReactionIdByPostIdAndUserId(post.id, JSON.parse(localStorage.getItem('user')).userId)
+          .then((response) => {
+            const reactionId = response.data;
+            // Now, call the updateReactionType function with the reactionId
+            ReactionService.updateReactionType(reactionId, {
+              postId: post.id,
+              type: 'DISLIKE',
+              user: JSON.parse(localStorage.getItem('user')),
+            })
+              .then(() => {
+                setDisliked(true);
+                setLiked(false);
+
+                // Update user reactions in local storage
+                const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+                userReactions[post.id] = { like: false, dislike: true };
+                localStorage.setItem('userReactions', JSON.stringify(userReactions));
+  
+
+                // Update the likes and dislikes count in state
+                if(likes > 0){
+                  setLikes(likes - 1);
+                }
+                setDislikes(dislikes + 1);
+              })
+              .catch((error) => {
+                console.log("Error updating reaction:", error);
+              });
+          })
+          .catch((error) => {
+            // Create a new dislike reaction
+            // Update the state to reflect that the user has disliked the post
+            setDisliked(true);
+            setLiked(false);
+      
+            // Update user reactions in local storage
+            const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+            userReactions[post.id] = { like: false, dislike: true };
+            localStorage.setItem('userReactions', JSON.stringify(userReactions));
+      
+            // Update the dislikes count in state
+            setDislikes(dislikes + 1);
+      
+            // Make an API request to create a dislike reaction
+            ReactionService.createReaction({
+              postId: post.id,
+              type: 'DISLIKE',
+              user: JSON.parse(localStorage.getItem('user')),
+            })
+              .then((response) => {
+                console.log("dislike saved");
+              })
+              .catch((error) => {
+                console.log("error");
+              });
+              });
+      } else {
+        // Create a new dislike reaction
+        // Update the state to reflect that the user has disliked the post
+        setDisliked(true);
+        setLiked(false);
+  
+        // Update user reactions in local storage
+        const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
+        userReactions[post.id] = { like: false, dislike: true };
+        localStorage.setItem('userReactions', JSON.stringify(userReactions));
+  
+        // Update the dislikes count in state
+        setDislikes(dislikes + 1);
+  
+        // Make an API request to create a dislike reaction
+        ReactionService.createReaction({
+          postId: post.id,
+          type: 'DISLIKE',
+          user: JSON.parse(localStorage.getItem('user')),
+        })
+          .then((response) => {
+            console.log("dislike saved");
+          })
+          .catch((error) => {
+            console.log("error");
+          });
+      }
     }
-
-    // Update user reactions in local storage
-    const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-    userReactions[post.id] = { like: false, dislike: true };
-    localStorage.setItem('userReactions', JSON.stringify(userReactions));
-
-    // Make an API request to create a dislike reaction
-    ReactionService.createReaction({
-      postId: post.id,
-      type: 'DISLIKE',
-      user: JSON.parse(localStorage.getItem('user')),
-    })
-      .then((response) => {
-        console.log("dislike saved");
-      })
-      .catch((error) => {
-        console.log("error");
-      });
   };
+  
 
   const handleCommentChange = (e) => {
     setCommentText(e.target.value);
@@ -103,13 +230,13 @@ const PostContent = ({ post, user }) => {
           className={`text-${liked ? 'blue' : 'gray'}-500 hover:text-blue-700`}
           onClick={handleLikeClick}
         >
-          <FontAwesomeIcon icon={faThumbsUp} /> Like
+          <span>{likes}</span> <FontAwesomeIcon icon={faThumbsUp} /> Like
         </button>
         <button
           className={`text-${disliked ? 'red' : 'gray'}-500 hover:text-red-700`}
           onClick={handleDislikeClick}
         >
-          <FontAwesomeIcon icon={faThumbsDown} /> Dislike
+          <span>{dislikes}</span> <FontAwesomeIcon icon={faThumbsDown} /> Dislike
         </button>
         <button className="text-green-500 hover:text-green-700">
           <FontAwesomeIcon icon={faComment} /> Comment
