@@ -14,34 +14,38 @@ function CreateNewPost() {
 
   const handlePostClick = () => {
     if (postText) {
-      // Prepare the data for the new post
-      const newPostData = {
-        body: postText,
-        user: {
-            userId:1,
-            userDescription: "this is description",
-            userName:"amal",
-            userPassword:"123"
-        },
-        photo: {defaultPhoto}, 
-      };
+      // Read the image file as binary data
+      fetch(defaultPhoto)
+        .then((response) => response.arrayBuffer())
+        .then((imageData) => {
+          // Convert the binary data to a Uint8Array
+          const byteData = new Uint8Array(imageData);
   
-      // Call your service's method to create a new post
-      PostService.createPost(newPostData)
-        .then((response) => {
-          // Handle the response, e.g., show a success message or update the UI
-          console.log('Post created successfully:', response);
-        })
-        .catch((error) => {
-          // Handle any errors, e.g., show an error message or log the error
-          console.error('Error creating post:', error);
+          // Prepare the data for the new post
+          const newPostData = {
+            body: postText,
+            user: JSON.parse(localStorage.getItem('user')),
+            photo: Array.from(byteData), // Convert Uint8Array to an array of numbers
+          };
+  
+          // Call your service's method to create a new post
+          PostService.createPost(newPostData)
+          .then((response) => {
+            // Handle the response, e.g., show a success message or update the UI
+            console.log('Post created successfully:', response);
+          })
+          .catch((error) => {
+            // Handle any errors, e.g., show an error message or log the error
+            console.error('Error creating post:', error);
+          });
+
+          // Clear the input field after posting
+          setPostText('');
         });
-  
-      // Clear the input field after posting
-      setPostText('');
     }
   };
   
+
 
   const buttonStyle = {
     backgroundColor : '#EE2C4D',
