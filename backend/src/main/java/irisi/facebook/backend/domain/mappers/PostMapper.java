@@ -14,13 +14,18 @@ import java.util.List;
 public class PostMapper {
 
     public PostRepresentation convertToPostRepresentation(Post post) {
-        return PostRepresentation.builder()
+        PostRepresentation.PostRepresentationBuilder builder = PostRepresentation.builder()
                 .id(post.getPostId())
                 .photo(post.getPostPhoto())
-                .body(post.getPostBody())
-                .user(convertToUserRepresentation(post.getPostOwner()))
-                .build();
+                .body(post.getPostBody());
+
+        if (post.getPostOwner() != null) {
+            builder.user(convertToUserRepresentation(post.getPostOwner()));
+        }
+
+        return builder.build();
     }
+
 
     public List<PostRepresentation> convertToPostRepresentationList(List<Post> postList) {
         List<PostRepresentation> representations = new ArrayList<>();

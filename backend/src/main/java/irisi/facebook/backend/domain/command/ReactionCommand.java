@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReactionCommand {
     private FBUser user;
-    private Post post;
+    private int postId;
     private String type;
 }
