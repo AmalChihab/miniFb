@@ -34,7 +34,7 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody UserCommand loginDto){
+    public ResponseEntity<UserCommand> authenticateUser(@RequestBody UserCommand loginDto){
 
         Optional<FBUser> userOptional = userRepository.findByUserName(loginDto.getUserName());
 
@@ -54,8 +54,17 @@ public class AuthController {
                 loginDto.getUserName(), loginDto.getUserPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
+
+        // Create a UserCommand object with the user information
+        UserCommand loggedInUser = UserCommand.builder()
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .userDescription(user.getUserDescription())
+                .build();
+
+        return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
     }
+
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserCommand signUpDto){
