@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
+import ReactionService from '../services/ReactionService';
 
 const PostContent = ({ post, user }) => {
   const [liked, setLiked] = useState(false);
@@ -13,13 +14,39 @@ const PostContent = ({ post, user }) => {
     if (disliked) {
       setDisliked(false);
     }
+    
+    // Make an API request to create a like reaction
+    ReactionService.createReaction({
+      postId: post.id, 
+      type: 'LIKE', 
+      user: JSON.parse(localStorage.getItem('user')),
+    })
+      .then((response) => {
+        console.log("like saved");
+      })
+      .catch((error) => {
+        console.log("error");
+      });
   };
-
+  
   const handleDislikeClick = () => {
     setDisliked(!disliked);
     if (liked) {
       setLiked(false);
     }
+  
+    // Make an API request to create a dislike reaction
+    ReactionService.createReaction({
+      postId: post.id,
+      type: 'DISLIKE', 
+      user: JSON.parse(localStorage.getItem('user')),
+    })
+      .then((response) => {
+        console.log("dislike saved");
+      })
+      .catch((error) => {
+        console.log("error");
+      });
   };
 
   const handleCommentChange = (e) => {
