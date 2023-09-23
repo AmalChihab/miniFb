@@ -1,4 +1,4 @@
-package irisi.facebook.backend;
+package irisi.facebook.backend.serviceTests;
 
 import irisi.facebook.backend.domain.model.FBUser;
 import irisi.facebook.backend.domain.repositories.FbUserRepository;
