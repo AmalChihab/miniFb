@@ -17,6 +17,7 @@ public class Post {
     private int postId;
     private String postBody;
     @Lob
+    @Column(length = 1048576)
     private byte[] postPhoto;
 
     @ManyToOne(fetch = FetchType.EAGER)
