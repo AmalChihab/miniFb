@@ -7,7 +7,7 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 // }
 function Navbar() {
   const location = useLocation();
-  const username = "amal";
+  const username = JSON.parse(localStorage.getItem('user')).userName;
 
   const isPostPage = location.pathname === '/posts';
 

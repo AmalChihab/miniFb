@@ -6,7 +6,7 @@ import PostContent from './PostContent';
 
 function Post() {
   const [posts, setPosts] = useState([]);
-  const user = "amal";
+  const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     // Fetch all posts when the component mounts
@@ -24,7 +24,7 @@ function Post() {
       <Navbar />
       <CreateNewPost />
       {posts.map((post) => (
-        <PostContent key={post.id} post={post} user={user} />
+        <PostContent key={post.id} post={post} user={user.userName} />
       ))}
     </div>
   );

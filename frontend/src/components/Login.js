@@ -24,6 +24,11 @@ function Login() {
       });
 
       if (response.ok) {
+        const userData = await response.json(); // Get the user data from the response
+
+        // Store user data in local storage
+        localStorage.setItem('user', JSON.stringify(userData));
+
         // Successful login, redirect or update user state here
         console.log('Logged in successfully!');
         navigate("/posts");
@@ -35,6 +40,7 @@ function Login() {
       console.error('Login error:', error);
     }
   };
+
 
   return (
     <div className="flex h-screen justify-center items-center">
