@@ -43,15 +43,6 @@ public class CommentMapper {
 
 
     public UserRepresentation convertToUserRepresentation(FBUser user) {
-        if (user == null) {
-            // Handle the case when 'user' is null, return a default or placeholder UserRepresentation:
-            return UserRepresentation.builder()
-                    .id(0)
-                    .description("User not available")
-                    .name("Unknown")
-                    .password("N/A")
-                    .build();
-        }
         return UserRepresentation.builder()
                 .id(user.getUserId())
                 .description(user.getUserDescription())

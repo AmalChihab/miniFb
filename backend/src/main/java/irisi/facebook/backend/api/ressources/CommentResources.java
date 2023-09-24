@@ -35,6 +35,8 @@ public class CommentResources {
 
     @PostMapping
     public ResponseEntity<Integer> insertComment(@RequestBody CommentCommand commentCommand) {
+
+        log.info("comment: ",commentCommand);
         log.info("Adding a new comment: {}", commentCommand);
         return ResponseEntity.ok(commentService.create(commentCommand));
     }
@@ -42,6 +44,7 @@ public class CommentResources {
 
     @PutMapping
     public ResponseEntity<CommentRepresentation> updateComment(@RequestBody CommentCommand commentCommand) {
+
         return ResponseEntity.ok(commentService.update(commentCommand));
     }
 
