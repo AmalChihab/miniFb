@@ -2,14 +2,16 @@ import React, { useState, useEffect  } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import ReactionService from '../services/ReactionService';
+import CommentService from '../services/CommentService'; 
 
 const PostContent = ({ post, user }) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(true);
 
 
   
@@ -41,7 +43,20 @@ const PostContent = ({ post, user }) => {
     } else if (userPostReactions.dislike) {
       setDisliked(true);
     }
+
+    CommentService.getCommentsByPostId(post.id)
+    .then((response) => {
+      setComments(response.data);
+      console.log("response data : ",response.data);
+      setLoadingComments(false); // Set loading to false once comments are loaded
+    })
+    .catch((error) => {
+      console.log('Error fetching comments:', error);
+      setLoadingComments(false); // Set loading to false in case of an error
+    });
+
   }, [post.id]);
+
 
   const handleLikeClick = () => {
     if (!liked) {
@@ -209,13 +224,47 @@ const PostContent = ({ post, user }) => {
   };
 
   const handleCommentSubmit = () => {
+    console.log("the user : ",JSON.parse(localStorage.getItem('user')))
     if (commentText) {
-      // Add the comment with the user's name to the comments array
-      setComments([...comments, commentText]);
-      // Clear the comment input
-      setCommentText('');
+      // Prepare the data for the new comment
+      const newCommentData = {
+        body: commentText,
+        user: JSON.parse(localStorage.getItem('user')),
+        post: post,
+      };
+  
+      // Call your service's method to create a new comment
+      CommentService.createComment(newCommentData)
+        .then((response) => {
+          // Handle the response, e.g., show a success message or update the UI
+          console.log('Comment created successfully:', response.data);
+  
+          // Update the comments state to include the new comment
+          setComments((prevComments) => [...prevComments, response.data]);
+  
+          // Clear the comment input field
+          setCommentText('');
+        })
+        .catch((error) => {
+          // Handle any errors, e.g., show an error message or log the error
+          console.error('Error creating comment:', error);
+        });
     }
   };
+
+  const handleCommentDelete = (commentId) => {
+    // Call your service's method to delete the comment by ID
+    CommentService.deleteComment(commentId)
+      .then(() => {
+        // Update the comments state by removing the deleted comment
+        setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+      })
+      .catch((error) => {
+        console.error('Error deleting comment:', error);
+      });
+  };
+  
+
 
   return (
     <div className="w-752 h-185 bg-white p-4 mb-4 rounded-lg shadow-md mx-auto" style={{ maxWidth: '752px' }}>
@@ -242,32 +291,49 @@ const PostContent = ({ post, user }) => {
           <FontAwesomeIcon icon={faComment} /> Comment
         </button>
       </div>
-
-     
-        {comments.map((comment, index) => (
-          <div key={index} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', width:'264px', height:'56px', fontFamily:'cursive' }}>
-            <div className="font-semibold">{user}</div>
-            <div>{comment}</div>
+ {/* Display comments if they exist */}
+ {loadingComments ? (
+        <p>Loading comments...</p>
+      ) : (
+        <div>
+          {comments.map((comment) => (
+            <div key={comment.id} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', wordWrap: 'break-word', fontFamily: 'cursive' }}>
+              <div className="font-semibold">{comment.user.name}</div>
+              <div>{comment.body}</div>
+              {/* Add a delete button */}
+              {comment.user.id === JSON.parse(localStorage.getItem('user')).userId && (
+                // Display delete button only if the comment belongs to the current user
+                <button
+                className="text-red-400 hover:text-red-700 mt-2"
+                onClick={() => handleCommentDelete(comment.id)}
+                style={{ fontSize: '12px', fontFamily: 'cursive' }}
+              >
+                Delete Comment
+              </button>
+              
+              )}
+            </div>
+          ))}
+          {/* Comment section */}
+          <div className="mt-2">
+            <div className="flex items-center space-x-2">
+              <input
+                type="text"
+                className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:border-blue-500"
+                placeholder={`Add a comment as ${user}...`}
+                value={commentText}
+                onChange={handleCommentChange}
+              />
+              <button
+                className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
+                onClick={handleCommentSubmit}
+              >
+                Post
+              </button>
+            </div>
           </div>
-        ))}
-         {/* Comment section */}
-      <div className="mt-2">
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:border-blue-500"
-            placeholder={`Add a comment as ${user}...`}
-            value={commentText}
-            onChange={handleCommentChange}
-          />
-          <button
-            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
-            onClick={handleCommentSubmit}
-          >
-            Post
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };

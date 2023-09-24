@@ -8,11 +8,13 @@ import irisi.facebook.backend.domain.model.Comment;
 import irisi.facebook.backend.domain.repositories.CommentRepository;
 import irisi.facebook.backend.domain.representations.CommentRepresentation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
@@ -28,7 +30,8 @@ public class CommentService {
     }
 
 
-    public int create(CommentCommand commentCommand) {
+    public CommentRepresentation create(CommentCommand commentCommand) {
+        log.info("comment command : {}",commentCommand);
         String body = commentCommand.getBody();
         UserCommand userCommand = commentCommand.getUser();
         PostCommand postCommand = commentCommand.getPost();
@@ -37,9 +40,8 @@ public class CommentService {
         comment.setCommentBody(body);
         comment.setCommentOwner(commentMapper.convertToUser(userCommand));
         comment.setCommentPost(commentMapper.convertToPost(postCommand));
-
         commentRepository.save(comment);
-        return comment.getCommentId();
+        return commentMapper.convertToCommentRepresentation(comment);
     }
 
     public CommentRepresentation update(CommentCommand commentCommand) {
