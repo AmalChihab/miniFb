@@ -34,28 +34,38 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody UserCommand loginDto){
+    public ResponseEntity<?> authenticateUser(@RequestBody UserCommand loginDto){
 
         Optional<FBUser> userOptional = userRepository.findByUserName(loginDto.getUserName());
 
         //checking if the user is found
         if (userOptional.isEmpty()) {
-            return new ResponseEntity<>("User not found!", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("User not found!");
         }
 
         // if the user is found we check if the entered password matches the actual one in our database
         FBUser user = userOptional.get();
 
         if (!passwordEncoder.matches(loginDto.getUserPassword(), user.getUserPassword())) {
-            return new ResponseEntity<>("Invalid password!", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("Invalid password!");
         }
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUserName(), loginDto.getUserPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
+
+        // Create a UserCommand object with the user information
+        UserCommand loggedInUser = UserCommand.builder()
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .userDescription(user.getUserDescription())
+                .build();
+
+        return ResponseEntity.ok(loggedInUser);
     }
+
+
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserCommand signUpDto){

@@ -1,17 +1,25 @@
 package irisi.facebook.backend.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
-    // Configure Cross-Origin Resource Sharing (CORS)
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Allow CORS for all endpoints
-                .allowedOrigins("http://localhost:3000") // Allow requests from this origin
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow these HTTP methods
-                .allowedHeaders("*"); // Allow all headers in the request
+public class CorsConfig {
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*"); // Allow requests from any origin
+        corsConfiguration.addAllowedMethod("*"); // Allow all HTTP methods
+        corsConfiguration.addAllowedHeader("*"); // Allow all headers
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsFilter(source);
     }
 }

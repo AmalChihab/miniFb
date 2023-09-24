@@ -7,6 +7,7 @@ import irisi.facebook.backend.domain.model.Post;
 import irisi.facebook.backend.domain.repositories.PostRepository;
 import irisi.facebook.backend.domain.representations.PostRepresentation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class PostService {
     private final PostMapper postMapper;
 
     public List<PostRepresentation> getAll() {
-        return postMapper.convertToPostRepresentationList(postRepository.findAll());
+        Sort sort = Sort.by(Sort.Direction.DESC, "postId"); // Sort by id in descending order
+        return postMapper.convertToPostRepresentationList(postRepository.findAll(sort));
     }
 
 
