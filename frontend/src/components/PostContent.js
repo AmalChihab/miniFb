@@ -224,13 +224,47 @@ const PostContent = ({ post, user }) => {
   };
 
   const handleCommentSubmit = () => {
+    console.log("the user : ",JSON.parse(localStorage.getItem('user')))
     if (commentText) {
-      // Add the comment with the user's name to the comments array
-      setComments([...comments, commentText]);
-      // Clear the comment input
-      setCommentText('');
+      // Prepare the data for the new comment
+      const newCommentData = {
+        body: commentText,
+        user: JSON.parse(localStorage.getItem('user')),
+        post: post,
+      };
+  
+      // Call your service's method to create a new comment
+      CommentService.createComment(newCommentData)
+        .then((response) => {
+          // Handle the response, e.g., show a success message or update the UI
+          console.log('Comment created successfully:', response.data);
+  
+          // Update the comments state to include the new comment
+          setComments((prevComments) => [...prevComments, response.data]);
+  
+          // Clear the comment input field
+          setCommentText('');
+        })
+        .catch((error) => {
+          // Handle any errors, e.g., show an error message or log the error
+          console.error('Error creating comment:', error);
+        });
     }
   };
+
+  const handleCommentDelete = (commentId) => {
+    // Call your service's method to delete the comment by ID
+    CommentService.deleteComment(commentId)
+      .then(() => {
+        // Update the comments state by removing the deleted comment
+        setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+      })
+      .catch((error) => {
+        console.error('Error deleting comment:', error);
+      });
+  };
+  
+
 
   return (
     <div className="w-752 h-185 bg-white p-4 mb-4 rounded-lg shadow-md mx-auto" style={{ maxWidth: '752px' }}>
@@ -257,17 +291,27 @@ const PostContent = ({ post, user }) => {
           <FontAwesomeIcon icon={faComment} /> Comment
         </button>
       </div>
-
-    {/* Display comments if they exist */}
-    {loadingComments ? (
-      <p>Loading comments...</p>
+ {/* Display comments if they exist */}
+ {loadingComments ? (
+        <p>Loading comments...</p>
       ) : (
         <div>
-          {console.log('Comments:', comments)} {/* Add this line */}
           {comments.map((comment) => (
-            <div key={comment.id} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', width: '264px', height: '56px', fontFamily: 'cursive' }}>
+            <div key={comment.id} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', wordWrap: 'break-word', fontFamily: 'cursive' }}>
               <div className="font-semibold">{comment.user.name}</div>
               <div>{comment.body}</div>
+              {/* Add a delete button */}
+              {comment.user.id === JSON.parse(localStorage.getItem('user')).userId && (
+                // Display delete button only if the comment belongs to the current user
+                <button
+                className="text-red-400 hover:text-red-700 mt-2"
+                onClick={() => handleCommentDelete(comment.id)}
+                style={{ fontSize: '12px', fontFamily: 'cursive' }}
+              >
+                Delete Comment
+              </button>
+              
+              )}
             </div>
           ))}
           {/* Comment section */}

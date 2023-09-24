@@ -3,6 +3,7 @@ package irisi.facebook.backend.api.ressources;
 
 import irisi.facebook.backend.api.common.ResourcePath;
 import irisi.facebook.backend.domain.command.CommentCommand;
+import irisi.facebook.backend.domain.model.Comment;
 import irisi.facebook.backend.domain.representations.CommentRepresentation;
 import irisi.facebook.backend.services.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class CommentResources {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> insertComment(@RequestBody CommentCommand commentCommand) {
+    public ResponseEntity<CommentRepresentation> insertComment(@RequestBody CommentCommand commentCommand) {
 
         log.info("comment: ",commentCommand);
         log.info("Adding a new comment: {}", commentCommand);

@@ -28,7 +28,7 @@ public class CommentService {
     }
 
 
-    public int create(CommentCommand commentCommand) {
+    public CommentRepresentation create(CommentCommand commentCommand) {
         String body = commentCommand.getBody();
         UserCommand userCommand = commentCommand.getUser();
         PostCommand postCommand = commentCommand.getPost();
@@ -39,7 +39,7 @@ public class CommentService {
         comment.setCommentPost(commentMapper.convertToPost(postCommand));
 
         commentRepository.save(comment);
-        return comment.getCommentId();
+        return commentMapper.convertToCommentRepresentation(comment);
     }
 
     public CommentRepresentation update(CommentCommand commentCommand) {

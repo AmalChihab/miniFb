@@ -12,16 +12,16 @@ const CommentService = {
       },
 
   createComment: (commentData) => {
-    return axios.post('/comments', commentData)
+    return axios.post(`${API_BASE_URL}`, commentData)
       
   },
 
   updateComment: (commentData) => {
-    return axios.put('/comments', commentData)
+    return axios.put(`${API_BASE_URL}`, commentData)
   },
 
   deleteComment: (commentId) => {
-    return axios.delete(`/comments/${commentId}`)
+    return axios.delete(`${API_BASE_URL}/${commentId}`)
   },
 };
 
