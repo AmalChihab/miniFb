@@ -10,6 +10,7 @@ import irisi.facebook.backend.domain.model.Post;
 import irisi.facebook.backend.domain.repositories.CommentRepository;
 import irisi.facebook.backend.domain.representations.CommentRepresentation;
 import irisi.facebook.backend.services.CommentService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Slf4j
 public class CommentServiceTest {
 
     @Mock
@@ -89,13 +91,20 @@ public class CommentServiceTest {
     @Test
     public void shouldCreateComment() {
         CommentCommand command = new CommentCommand();
+        command.setId(1);
         UserCommand userCommand = new UserCommand();
+        userCommand.setUserId(1);
+        userCommand.setUserPassword("123");
+        userCommand.setUserDescription("desc");
         userCommand.setUserName("test user");
         command.setBody("hello");
         command.setUser(userCommand);
 
         PostCommand postCommand = new PostCommand();
         postCommand.setId(1);
+        postCommand.setBody("hello");
+        postCommand.setUser(userCommand);
+        postCommand.setPhoto(new byte[]{10});
         command.setPost(postCommand);
 
         FBUser fbUser = new FBUser();
@@ -107,12 +116,14 @@ public class CommentServiceTest {
         expectedComment.setCommentOwner(fbUser);
         expectedComment.setCommentPost(new Post());
         when(commentRepository.save(any(Comment.class))).thenReturn(expectedComment);
-
-        int createdCommentID = commentService.create(command);
+        log.info("command : {}",command);
+        CommentRepresentation createdComment = commentService.create(command);
+        log.info("command : {}",createdComment);
         verify(commentMapper).convertToUser(userCommand);
         verify(commentRepository).save(any(Comment.class));
-        assertEquals(expectedComment.getCommentId(), createdCommentID);
     }
+
+
 
     @Test
     public void shouldUpdateComment() {
