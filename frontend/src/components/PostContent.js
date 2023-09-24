@@ -2,14 +2,16 @@ import React, { useState, useEffect  } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import ReactionService from '../services/ReactionService';
+import CommentService from '../services/CommentService'; 
 
 const PostContent = ({ post, user }) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(true);
 
 
   
@@ -41,7 +43,20 @@ const PostContent = ({ post, user }) => {
     } else if (userPostReactions.dislike) {
       setDisliked(true);
     }
+
+    CommentService.getCommentsByPostId(post.id)
+    .then((response) => {
+      setComments(response.data);
+      console.log("response data : ",response.data);
+      setLoadingComments(false); // Set loading to false once comments are loaded
+    })
+    .catch((error) => {
+      console.log('Error fetching comments:', error);
+      setLoadingComments(false); // Set loading to false in case of an error
+    });
+
   }, [post.id]);
+
 
   const handleLikeClick = () => {
     if (!liked) {
@@ -243,31 +258,38 @@ const PostContent = ({ post, user }) => {
         </button>
       </div>
 
-     
-        {comments.map((comment, index) => (
-          <div key={index} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', width:'264px', height:'56px', fontFamily:'cursive' }}>
-            <div className="font-semibold">{user}</div>
-            <div>{comment}</div>
+    {/* Display comments if they exist */}
+    {loadingComments ? (
+      <p>Loading comments...</p>
+      ) : (
+        <div>
+          {console.log('Comments:', comments)} {/* Add this line */}
+          {comments.map((comment) => (
+            <div key={comment.id} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', width: '264px', height: '56px', fontFamily: 'cursive' }}>
+              <div className="font-semibold">{comment.user.name}</div>
+              <div>{comment.body}</div>
+            </div>
+          ))}
+          {/* Comment section */}
+          <div className="mt-2">
+            <div className="flex items-center space-x-2">
+              <input
+                type="text"
+                className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:border-blue-500"
+                placeholder={`Add a comment as ${user}...`}
+                value={commentText}
+                onChange={handleCommentChange}
+              />
+              <button
+                className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
+                onClick={handleCommentSubmit}
+              >
+                Post
+              </button>
+            </div>
           </div>
-        ))}
-         {/* Comment section */}
-      <div className="mt-2">
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:border-blue-500"
-            placeholder={`Add a comment as ${user}...`}
-            value={commentText}
-            onChange={handleCommentChange}
-          />
-          <button
-            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
-            onClick={handleCommentSubmit}
-          >
-            Post
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
