@@ -24,7 +24,7 @@ function Post() {
       <Navbar />
       <CreateNewPost />
       {posts.map((post) => (
-        <PostContent key={post.id} post={post} user={user.userName} />
+        <PostContent key={post.id} post={post} user={user.userName} width="752" height="185" />
       ))}
     </div>
   );

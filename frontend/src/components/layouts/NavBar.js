@@ -8,6 +8,8 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 function Navbar() {
   const location = useLocation();
   const username = JSON.parse(localStorage.getItem('user')).userName;
+  const userId = JSON.parse(localStorage.getItem('user')).userId;
+
 
   const isPostPage = location.pathname === '/posts';
 
@@ -61,8 +63,10 @@ function Navbar() {
       </Link>
 
       <div className="text-black">
-        {username && (
-          <span className={`font-semibold text-lg ${customFont}`}>{username}</span>
+      {username && (
+          <Link to={`/profile/${username}/${userId}`} className={`font-semibold text-lg ${customFont}`}>
+            {username}
+          </Link>
         )}
       </div>
     </nav>
