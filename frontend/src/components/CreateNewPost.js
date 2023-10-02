@@ -41,6 +41,7 @@ function CreateNewPost() {
 
           // Clear the input field after posting
           setPostText('');
+          window.location.reload();
         });
     }
   };
