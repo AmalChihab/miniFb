@@ -15,7 +15,6 @@ const Profile = () => {
     PostService.getPostsByUserId(userid)
      .then((response) => {
         setPostsByUser(response.data);
-        console.log("data of posts by user : ",response.data);
       })
       .catch((error) => {
         console.error('Error fetching posts:', error);
@@ -23,21 +22,21 @@ const Profile = () => {
   }, [userid]);
 
   return (
-    <div>
+    <div className="bg-gray-100 h-screen">
       <Navbar />
       <div className="flex space-x-20 bg-gray-100">
         {/* Left Column (Profile Information) */}
-        <div className="w-1/3 p-5 bg-gray-100 rounded-lg">
+        <div className="w-1/3 p-5 rounded-lg">
           <ProfileInformation username={username} userId={userid} />
         </div>
 
         {/* Right Column (Post Content) */}
+         
         <div className="md:w-2/4 p-2">
             {postsByUser.map((post) => (
-              <div key={post.id}>
-                <PostContent post={postsByUser} user={username} width="752" height="182" />
-              </div>
-            ))}
+                  <div key={post.id}>
+                <PostContent key={post.id} post={post} user={username} width="752" height="182" />
+                </div> ))}
         </div>
       </div>
     </div>

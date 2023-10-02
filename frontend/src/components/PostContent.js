@@ -47,7 +47,6 @@ const PostContent = ({ post, user, width, height }) => {
     CommentService.getCommentsByPostId(post.id)
     .then((response) => {
       setComments(response.data);
-      console.log("response data : ",response.data);
       setLoadingComments(false); // Set loading to false once comments are loaded
     })
     .catch((error) => {
