@@ -29,6 +29,8 @@ function Login() {
         // Store user data in local storage
         localStorage.setItem('user', JSON.stringify(userData));
 
+        localStorage.setItem('token', Math.random());
+
         // Successful login, redirect or update user state here
         console.log('Logged in successfully!');
         navigate("/posts");
