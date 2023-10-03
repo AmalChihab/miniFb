@@ -23,6 +23,11 @@ public class PostService {
         return postMapper.convertToPostRepresentationList(postRepository.findAll(sort));
     }
 
+    public List<PostRepresentation> getAllByUserId(int userId) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "postId");
+        return postMapper.convertToPostRepresentationList(postRepository.findAllByPostOwnerUserId(userId, sort));
+    }
+
 
     public int create(PostCommand postCommand) {
         byte[] photo = postCommand.getPhoto();
