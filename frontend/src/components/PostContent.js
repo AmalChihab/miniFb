@@ -274,13 +274,15 @@ const PostContent = ({ post, user }) => {
       </div>
       <p style={{fontFamily:'cursive'}}>{post.body}</p>
 
-      {post.photo && (
-        <img
-          src={`data:image/jpeg;base64,${post.photo}`} // Assuming your photo data is stored as a base64-encoded string
-          alt="Post Photo"
-          className="max-w-full mt-4"
-        />
-      )}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {post.photo && (
+          <img
+            src={`data:image/jpeg;base64,${post.photo}`} // Assuming your photo data is stored as a base64-encoded string
+            alt="Post Photo"
+            className="max-w-full mt-4"
+          />
+        )}
+      </div>
       
       <div className="flex justify-evenly items-center space-x-2 mt-4">
         <button
