@@ -19,4 +19,5 @@ public class UserRepresentation {
     private Date birthday;
     private String phoneNumber;
     private String gender;
+    private String email;
 }
