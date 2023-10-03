@@ -28,6 +28,7 @@ public class PostService {
         byte[] photo = postCommand.getPhoto();
         String body = postCommand.getBody();
         UserCommand command = postCommand.getUser();
+
         Post post = new Post();
         post.setPostBody(body);
         post.setPostOwner(postMapper.convertToUser(command));
