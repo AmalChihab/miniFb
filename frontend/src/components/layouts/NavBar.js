@@ -71,13 +71,10 @@ function Navbar() {
       </Link>
 
       <div className="text-black">
-      {username && (
-          <Link to={`/profile/${username}/${userId}`} className={`font-semibold text-lg ${customFont}`}>
-            {username}
-          </Link>
-        )}
         {username ? (
-          <span className={`font-semibold text-lg ${customFont}`}>{username}</span>
+          <Link to={`/profile/${username}/${userId}`} className={`font-semibold text-lg ${customFont}`}>
+          {username}
+          </Link>
         ) : null}
         <FontAwesomeIcon onClick={handleLogout} icon={faSignOutAlt} className="hover:text-pink-600 ml-6 h-6 w-6" />
       </div>
