@@ -9,6 +9,8 @@ const Profile = () => {
   // Access the username from the URL parameter
   const { username, userid } = useParams();
   const [postsByUser, setPostsByUser] = useState([]);
+  const user = JSON.parse(localStorage.getItem('user'));
+
 
   useEffect(() => {
  
@@ -27,7 +29,7 @@ const Profile = () => {
       <div className="flex space-x-20 bg-gray-100">
         {/* Left Column (Profile Information) */}
         <div className="w-1/3 p-5 rounded-lg">
-          <ProfileInformation username={username} userId={userid} />
+          <ProfileInformation user={user} username={username} userId={userid} />
         </div>
 
         {/* Right Column (Post Content) */}
