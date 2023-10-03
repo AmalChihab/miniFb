@@ -10,10 +10,10 @@ import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const location = useLocation();
+  const userId = JSON.parse(localStorage.getItem('user')).userId;
   const userString = localStorage.getItem('user');
   const username = userString ? JSON.parse(userString).userName : null; // Check if username is not null
   const navigate = useNavigate();
-
   const isPostPage = location.pathname === '/posts';
 
   const iconHomeStyle = {
@@ -71,6 +71,11 @@ function Navbar() {
       </Link>
 
       <div className="text-black">
+      {username && (
+          <Link to={`/profile/${username}/${userId}`} className={`font-semibold text-lg ${customFont}`}>
+            {username}
+          </Link>
+        )}
         {username ? (
           <span className={`font-semibold text-lg ${customFont}`}>{username}</span>
         ) : null}

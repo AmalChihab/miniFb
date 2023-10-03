@@ -4,7 +4,7 @@ import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg
 import ReactionService from '../services/ReactionService';
 import CommentService from '../services/CommentService'; 
 
-const PostContent = ({ post, user }) => {
+const PostContent = ({ post, user, width, height }) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -47,7 +47,6 @@ const PostContent = ({ post, user }) => {
     CommentService.getCommentsByPostId(post.id)
     .then((response) => {
       setComments(response.data);
-      console.log("response data : ",response.data);
       setLoadingComments(false); // Set loading to false once comments are loaded
     })
     .catch((error) => {
@@ -267,7 +266,7 @@ const PostContent = ({ post, user }) => {
 
 
   return (
-    <div className="w-752 h-185 bg-white p-4 mb-4 rounded-lg shadow-md mx-auto" style={{ maxWidth: '752px' }}>
+<div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
         <div className="text-blue-500 font-semibold">{user}</div>
         <div className="text-gray-400">posted a post</div>
