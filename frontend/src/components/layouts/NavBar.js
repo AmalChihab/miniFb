@@ -4,13 +4,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome } from '@fortawesome/free-solid-svg-icons'; 
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'; 
-// }
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
+
+
 function Navbar() {
   const location = useLocation();
-  const username = JSON.parse(localStorage.getItem('user')).userName;
   const userId = JSON.parse(localStorage.getItem('user')).userId;
-
-
+  const userString = localStorage.getItem('user');
+  const username = userString ? JSON.parse(userString).userName : null; // Check if username is not null
+  const navigate = useNavigate();
   const isPostPage = location.pathname === '/posts';
 
   const iconHomeStyle = {
@@ -43,6 +46,11 @@ function Navbar() {
     fontSize: "large",
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate("/");
+  };
+
   return (
     <nav style={navbarStyle} className="p-4 flex justify-between items-center">
       <div className="flex items-center">
@@ -68,7 +76,12 @@ function Navbar() {
             {username}
           </Link>
         )}
+        {username ? (
+          <span className={`font-semibold text-lg ${customFont}`}>{username}</span>
+        ) : null}
+        <FontAwesomeIcon onClick={handleLogout} icon={faSignOutAlt} className="hover:text-pink-600 ml-6 h-6 w-6" />
       </div>
+
     </nav>
   );
 }
