@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PostService from '../services/PostService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 
 function CreateNewPost() {
   const [postText, setPostText] = useState('');
@@ -79,6 +80,10 @@ function CreateNewPost() {
     transition: 'background-color 0.3s ease',
   };
 
+  const iconColor = {
+    color: '#EE2C4D',
+  }
+
   return (
     <div className="w-752 h-185 bg-white p-4 mb-4 rounded-lg shadow-md mx-auto" style={{ maxWidth: '752px' }}>
       <textarea
@@ -111,14 +116,15 @@ function CreateNewPost() {
           <img
             src={imagePreview}
             alt="Selected Image"
-            className="rounded-lg"
-            style={{ width: '200px', height: '200px', borderRadius: '10px' }}
+            className="rounded-lg object-cover"
+            style={{ maxWidth: '700px', maxHeight: '200px', objectFit: 'contain', borderRadius: '0.5rem' }}
           />
         </div>
       )}
       <div className="flex justify-between items-center mt-2">
-        <label className="cursor-pointer" htmlFor="imageInput">
-          Select Image
+        <label className="cursor-pointer flex items-center" htmlFor="imageInput">
+          <FontAwesomeIcon icon={faImage} className="h-5 w-5 mr-1 icon-color" />
+          photo
         </label>
         <button
           className="text-white px-4 py-1 rounded-md hover:bg-ee2c4d hover:text-white font-bold"
