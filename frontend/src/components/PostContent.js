@@ -14,7 +14,6 @@ const PostContent = ({ post, user, width, height }) => {
   const [loadingComments, setLoadingComments] = useState(true);
 
 
-  
   useEffect(() => {
     // Fetch the number of likes/dislikes for this post
     ReactionService.getNbrLikesByPostId(post.id)
@@ -45,16 +44,18 @@ const PostContent = ({ post, user, width, height }) => {
     }
 
     CommentService.getCommentsByPostId(post.id)
-    .then((response) => {
-      setComments(response.data);
-      setLoadingComments(false); // Set loading to false once comments are loaded
-    })
-    .catch((error) => {
-      console.log('Error fetching comments:', error);
-      setLoadingComments(false); // Set loading to false in case of an error
-    });
+      .then((response) => {
+        setComments(response.data);
+        console.log("response data : ", response.data);
+        setLoadingComments(false); // Set loading to false once comments are loaded
+      })
+      .catch((error) => {
+        console.log('Error fetching comments:', error);
+        setLoadingComments(false); // Set loading to false in case of an error
+      });
 
   }, [post.id]);
+
 
 
   const handleLikeClick = () => {
@@ -272,6 +273,16 @@ const PostContent = ({ post, user, width, height }) => {
         <div className="text-gray-400">posted a post</div>
       </div>
       <p style={{fontFamily:'cursive'}}>{post.body}</p>
+
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {post.photo && (
+          <img
+            src={`data:image/jpeg;base64,${post.photo}`} // Assuming your photo data is stored as a base64-encoded string
+            alt="Post Photo"
+            className="max-w-full mt-4"
+          />
+        )}
+      </div>
       
       <div className="flex justify-evenly items-center space-x-2 mt-4">
         <button
