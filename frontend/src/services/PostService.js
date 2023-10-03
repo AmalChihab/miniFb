@@ -17,6 +17,10 @@ const PostService = {
   deletePost: (postId) => {
     return axios.delete(`${API_BASE_URL}/${postId}`);
   },
+
+  getPostsByUserId : (userId) => {
+    return axios.get(`${API_BASE_URL}/posts/user/${userId}`);
+  },
 };
 
 export default PostService;
