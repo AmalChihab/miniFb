@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -21,6 +23,9 @@ public class FBUser {
     private String userName;
     private String userPassword;
     private String userDescription;
-
+    private Date userBirthday;
+    private String userPhoneNumber;
+    private String userGender;
+    private String userEmail;
 
 }

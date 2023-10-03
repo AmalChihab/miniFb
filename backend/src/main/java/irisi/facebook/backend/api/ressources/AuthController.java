@@ -60,6 +60,10 @@ public class AuthController {
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .userDescription(user.getUserDescription())
+                .userGender(user.getUserGender())
+                .userBirthday(user.getUserBirthday())
+                .userEmail(user.getUserEmail())
+                .userPhoneNumber(user.getUserPhoneNumber())
                 .build();
 
         return ResponseEntity.ok(loggedInUser);
@@ -80,6 +84,10 @@ public class AuthController {
         FBUser user = new FBUser();
         user.setUserName(signUpDto.getUserName());
         user.setUserPassword(passwordEncoder.encode(signUpDto.getUserPassword()));
+        user.setUserDescription(signUpDto.getUserDescription());
+        user.setUserGender(signUpDto.getUserGender());
+        user.setUserBirthday(signUpDto.getUserBirthday());
+        user.setUserPhoneNumber(signUpDto.getUserPhoneNumber());
 
 
         userRepository.save(user);

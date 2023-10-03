@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,4 +16,7 @@ public class UserRepresentation {
     private String name;
     private String password;
     private String description;
+    private Date birthday;
+    private String phoneNumber;
+    private String gender;
 }
