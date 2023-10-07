@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import ReactionService from '../services/ReactionService';
 import CommentService from '../services/CommentService'; 
+import defaultProfilePhoto from '../assets/images/default.jpg';
 
 const PostContent = ({ post, user, width, height }) => {
   const [liked, setLiked] = useState(false);
@@ -269,6 +270,11 @@ const PostContent = ({ post, user, width, height }) => {
   return (
 <div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
+      <img
+          src={user.profilePhoto || defaultProfilePhoto}
+          alt={`${user.name}'s Profile Photo`}
+          className="w-10 h-10 rounded-full"
+        />
         <div className="text-blue-500 font-semibold">{user}</div>
         <div className="text-gray-400">posted a post</div>
       </div>
