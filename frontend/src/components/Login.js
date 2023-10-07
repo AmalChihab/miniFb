@@ -26,6 +26,7 @@ function Login() {
       if (response.ok) {
         const userData = await response.json(); // Get the user data from the response
 
+        
         // Store user data in local storage
         localStorage.setItem('user', JSON.stringify(userData));
 

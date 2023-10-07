@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,7 +22,7 @@ public class authenticationServiceTest {
         // Arrange
         String username = "testUser";
         String password = "testPassword";
-        FBUser testUser = new FBUser(0, username, password, "desc");
+        FBUser testUser = new FBUser(0, username, password, "desc", new Date(), "066666666", "male", "feiyukine@gmail.com");
         FbUserRepository userRepository = mock(FbUserRepository.class);
         when(userRepository.findByUserName(username)).thenReturn(java.util.Optional.of(testUser));
 

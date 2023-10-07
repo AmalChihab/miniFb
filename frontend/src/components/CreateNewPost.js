@@ -80,9 +80,6 @@ function CreateNewPost() {
     transition: 'background-color 0.3s ease',
   };
 
-  const iconColor = {
-    color: '#EE2C4D',
-  }
 
   return (
     <div className="w-752 h-185 bg-white p-4 mb-4 rounded-lg shadow-md mx-auto" style={{ maxWidth: '752px' }}>
