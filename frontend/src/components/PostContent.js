@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import ReactionService from '../services/ReactionService';
 import CommentService from '../services/CommentService'; 
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 
-const PostContent = ({ post, user, width, height }) => {
+const PostContent = ({ post, user, width, height, onDelete }) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -12,6 +13,21 @@ const PostContent = ({ post, user, width, height }) => {
   const [dislikes, setDislikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(true);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleDeletePost = () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this post?');
+
+    if (confirmDelete) {
+      // Call the onDelete function passed from the Post component to trigger post deletion
+      onDelete(post.id);
+    }
+  };
+
 
 
   useEffect(() => {
@@ -267,19 +283,19 @@ const PostContent = ({ post, user, width, height }) => {
 
 
   return (
-<div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto`} style={{ maxWidth: '752px' }}>
+<div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto relative`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
         <div className="text-blue-500 font-semibold">{user}</div>
         <div className="text-gray-400">posted a post</div>
       </div>
       <p style={{fontFamily:'cursive'}}>{post.body}</p>
 
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{maxWidth: '750px', maxHeight: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
   {post.photo && (
     <img
-      src={`data:image/jpeg;base64,${post.photo}`} // Assuming your photo data is stored as a base64-encoded string
-      alt="Post Photo"
-      style={{ maxWidth: '700px', maxHeight: '200px', objectFit: 'contain', borderRadius: '0.5rem' }}
+      src={`data:image/jpeg;base64,${post.photo}`} // Assuming photo data is stored as a base64-encoded string
+      alt="Post"
+      style={{width:'800px', maxWidth: '760px', maxHeight: '200px', objectFit: 'contain', borderRadius: '0.5rem' }}
     />
   )}
 </div>
@@ -346,6 +362,26 @@ const PostContent = ({ post, user, width, height }) => {
           </div>
         </div>
       )}
+     <div className="absolute top-2 right-2 mx-4 py-2">
+        <button
+          onClick={toggleDropdown}
+          className="text-gray-500 hover:text-gray-700 focus:outline-none"
+        >
+            <FontAwesomeIcon icon={faEllipsisVertical} />
+        </button>
+        {isDropdownOpen && (
+          <div className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+            <div className="py-1">
+              <button
+                onClick={handleDeletePost}
+                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 hover:text-red-800"
+              >
+                Delete Post
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

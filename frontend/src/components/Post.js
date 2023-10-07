@@ -28,6 +28,18 @@ function Post() {
       });
   }, [navigate, token]);
 
+  const handleDeletePost = (postId) => {
+    // Call your service's method to delete the post
+    PostService.deletePost(postId)
+      .then(() => {
+        // Handle successful deletion by removing the deleted post from the state
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+      })
+      .catch((error) => {
+        console.error('Error deleting post:', error);
+      });
+  };
+
   return (
     <div>
       <Navbar />
@@ -35,7 +47,7 @@ function Post() {
        {user && (
         <div>
       {posts.map((post) => (
-        <PostContent key={post.id} post={post} user={user.userName} width="752" height="185" />
+        <PostContent key={post.id} post={post} user={user.userName} width="752" height="185"  onDelete={handleDeletePost} />
       ))}
           </div>
       )}

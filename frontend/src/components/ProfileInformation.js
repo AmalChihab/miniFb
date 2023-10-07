@@ -20,7 +20,7 @@ const ProfileInformation = (props) => {
   }
 
   return (
-    <div className="bg-white p-4 mb-4 rounded-lg shadow-md mx-auto">
+    <div className="bg-white p-4 mb-4 rounded-lg shadow-md mx-auto min-h-[0]">
       <h2 style={customFont} className="text-xl font-semibold mb-4">Personal Information</h2>
 
       <div className="flex items-center p-4">
