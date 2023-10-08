@@ -22,7 +22,7 @@ public class authenticationServiceTest {
         // Arrange
         String username = "testUser";
         String password = "testPassword";
-        FBUser testUser = new FBUser(0, username, password, "desc", new Date(), "066666666", "male", "feiyukine@gmail.com");
+        FBUser testUser = new FBUser(0, username, password, "desc", new Date(), "066666666", "male", "feiyukine@gmail.com", new byte[1]);
         FbUserRepository userRepository = mock(FbUserRepository.class);
         when(userRepository.findByUserName(username)).thenReturn(java.util.Optional.of(testUser));
 

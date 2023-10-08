@@ -5,6 +5,7 @@ import ReactionService from '../services/ReactionService';
 import CommentService from '../services/CommentService'; 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import defaultProfilePhoto from '../assets/images/default.jpg';
+import ProfileService from '../services/ProfileService';
 
 const PostContent = ({ post, user, width, height, onDelete }) => {
   const [liked, setLiked] = useState(false);
@@ -15,6 +16,7 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
   const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(true);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null); 
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -29,6 +31,16 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
     }
   };
 
+
+  useEffect(() => {
+    ProfileService.getProfilePhoto(JSON.parse(localStorage.getItem('user')).userId)
+      .then((imageDataUrl) => {
+        setProfilePhoto(imageDataUrl);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile photo:', error);
+      });
+  }, [user]);
 
 
   useEffect(() => {
@@ -282,15 +294,29 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
   };
   
 
+  // Retrieve the user data and profile picture from local storage
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const profilePictureData = userData.profilePicture;
+
+  // Check if profilePictureData is null or empty
+  const hasProfilePicture = profilePictureData && profilePictureData.length > 0;
+
+  // Construct the data URI for the profile picture or use the default picture
+  const profilePictureSrc = hasProfilePicture
+    ? `data:image/jpeg;base64,${profilePictureData}`
+    : defaultProfilePhoto; // Assuming defaultProfilePhoto is a URL to the default picture
+
 
   return (
 <div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto relative`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
-      <img
-          src={user.profilePhoto || defaultProfilePhoto}
-          alt={`${user.name}'s Profile Photo`}
+      
+        <img
+          src={profilePictureSrc}
+          alt="Profile"
           className="w-10 h-10 rounded-full"
         />
+        
         <div className="text-blue-500 font-semibold">{user}</div>
         <div className="text-gray-400">posted a post</div>
       </div>

@@ -1,5 +1,6 @@
 package irisi.facebook.backend.domain.representations;
 
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +21,7 @@ public class UserRepresentation {
     private String phoneNumber;
     private String gender;
     private String email;
+
+    @Lob
+    private byte[] profilePicture;
 }
