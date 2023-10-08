@@ -63,6 +63,20 @@ const ProfileInformation = (props) => {
       });
   };
 
+  // Retrieve the user data and profile picture from local storage
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const profilePictureData = userData.profilePicture;
+
+  // Check if profilePictureData is null or empty
+  const hasProfilePicture = profilePictureData && profilePictureData.length > 0;
+
+  // Construct the data URI for the profile picture or use the default picture
+  const profilePictureSrc = hasProfilePicture
+    ? `data:image/jpeg;base64,${profilePictureData}`
+    : defaultProfilePhoto; // Assuming defaultProfilePhoto is a URL to the default picture
+
+
+
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow-md mx-auto min-h-[0]">
       <h2 style={customFont} className="text-xl font-semibold mb-4">Personal Information</h2>
@@ -70,10 +84,11 @@ const ProfileInformation = (props) => {
       <div className="flex items-center p-4">
         {/* Display the selected profile picture */}
         <img
-          src={profilePicture || defaultProfilePhoto}
+          src={profilePictureSrc}
           alt="Profile"
           className="w-12 h-12 rounded-full mr-2"
         />
+        
 
         {/* Input for choosing a new profile picture */}
         <label htmlFor="profilePictureInput" className="cursor-pointer">

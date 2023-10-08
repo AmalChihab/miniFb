@@ -294,12 +294,25 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
   };
   
 
+  // Retrieve the user data and profile picture from local storage
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const profilePictureData = userData.profilePicture;
+
+  // Check if profilePictureData is null or empty
+  const hasProfilePicture = profilePictureData && profilePictureData.length > 0;
+
+  // Construct the data URI for the profile picture or use the default picture
+  const profilePictureSrc = hasProfilePicture
+    ? `data:image/jpeg;base64,${profilePictureData}`
+    : defaultProfilePhoto; // Assuming defaultProfilePhoto is a URL to the default picture
+
 
   return (
 <div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto relative`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
+      
         <img
-          src={profilePhoto || defaultProfilePhoto} 
+          src={profilePictureSrc}
           alt="Profile"
           className="w-10 h-10 rounded-full"
         />
