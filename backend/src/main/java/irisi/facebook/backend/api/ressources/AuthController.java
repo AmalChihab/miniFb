@@ -64,6 +64,7 @@ public class AuthController {
                 .userBirthday(user.getUserBirthday())
                 .userEmail(user.getUserEmail())
                 .userPhoneNumber(user.getUserPhoneNumber())
+                .profilePicture(user.getProfilePicture())
                 .build();
 
         return ResponseEntity.ok(loggedInUser);

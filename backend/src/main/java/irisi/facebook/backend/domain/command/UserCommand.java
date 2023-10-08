@@ -1,5 +1,6 @@
 package irisi.facebook.backend.domain.command;
 
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +36,6 @@ public class UserCommand {
 
     @Email(message = "Invalid email format")
     private String userEmail;
+
+    private byte[] profilePicture;
 }
