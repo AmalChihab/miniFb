@@ -4,7 +4,9 @@ import irisi.facebook.backend.domain.command.PostCommand;
 import irisi.facebook.backend.domain.command.UserCommand;
 import irisi.facebook.backend.domain.mappers.PostMapper;
 import irisi.facebook.backend.domain.model.Post;
+import irisi.facebook.backend.domain.repositories.CommentRepository;
 import irisi.facebook.backend.domain.repositories.PostRepository;
+import irisi.facebook.backend.domain.repositories.ReactionRepository;
 import irisi.facebook.backend.domain.representations.PostRepresentation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -17,6 +19,8 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
+    private final ReactionRepository reactionRepository;
+    private final CommentRepository commentRepository;
 
     public List<PostRepresentation> getAll() {
         Sort sort = Sort.by(Sort.Direction.DESC, "postId"); // Sort by id in descending order
@@ -54,8 +58,16 @@ public class PostService {
 
     public String delete(int id) {
         if (id != 0) {
+
+            // delete related records in the 'reaction' table
+            reactionRepository.deleteReactionsByPostReaction_PostId(id);
+
+            // delete related records in the 'comment' table
+            commentRepository.deleteReactionsByCommentPost_PostId(id);
+
             postRepository.deleteById(id);
         }
         return "post deleted!";
     }
+
 }
