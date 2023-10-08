@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFilePen, faEnvelope, faPhone, faMars, faVenus, faCalendar} from '@fortawesome/free-solid-svg-icons'; // Example icon (replace with the desired FontAwesome icon)
+import { faUser, faFilePen, faEnvelope, faPhone, faMars, faVenus, faCalendar, faPlus} from '@fortawesome/free-solid-svg-icons'; // Example icon (replace with the desired FontAwesome icon)
+import ProfileService from '../services/ProfileService';
+
+import defaultProfilePhoto from '../assets/images/default.jpg';
 
 const ProfileInformation = (props) => {
   const { user } = props;
@@ -22,9 +25,69 @@ const ProfileInformation = (props) => {
   const genderIcon = user.userGender === 'Male' ? faMars : faVenus;
 
 
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  useEffect(() => {
+    ProfileService.getProfilePhoto(user.userId)
+      .then((imageDataUrl) => {
+        setProfilePicture(imageDataUrl);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile photo:', error);
+      });
+  }, [user]);
+
+  const handleProfilePictureChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setProfilePicture(file);
+      console.log(file);
+
+      // Upload the selected profile picture
+      uploadProfilePicture(user.userId, file);
+      window.location.reload();
+    }
+  };
+
+  const uploadProfilePicture = (userId, file) => {
+    ProfileService.uploadProfilePicture(userId, file)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log('Profile picture uploaded successfully');
+        } else {
+          console.error('Failed to upload profile picture');
+        }
+      })
+      .catch((error) => {
+        console.error('Error uploading profile picture:', error);
+      });
+  };
+
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow-md mx-auto min-h-[0]">
       <h2 style={customFont} className="text-xl font-semibold mb-4">Personal Information</h2>
+
+      <div className="flex items-center p-4">
+        {/* Display the selected profile picture */}
+        <img
+          src={profilePicture || defaultProfilePhoto}
+          alt="Profile"
+          className="w-12 h-12 rounded-full mr-2"
+        />
+
+        {/* Input for choosing a new profile picture */}
+        <label htmlFor="profilePictureInput" className="cursor-pointer">
+          <FontAwesomeIcon icon={faPlus} className="mr-2" />
+          Change Profile Picture
+        </label>
+        <input
+          type="file"
+          id="profilePictureInput"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={handleProfilePictureChange}
+        />
+      </div>
 
       <div className="flex items-center p-4">
         <FontAwesomeIcon icon={faUser} className="mr-2" /> 
