@@ -117,17 +117,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         console.log("Error fetching creator of the post:", error);
         setLoadingCreatorInfo(false); // Set loading to false in case of an error
       });
-      
-
-      ReactionService.getReactionsByPostId(post.id)
-      .then((response) => {
-        setPostReactions(response.data);
-        setLoadingPostReactions(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching post reactions:', error);
-        setLoadingPostReactions(false);
-      });
 
   }, [post.id]);
 
@@ -408,6 +397,7 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
             alt="Profile"
             className="w-10 h-10 rounded-full"
           />
+
           <div className="font-semibold">{comment.user.name}</div>
         </div>
         <div>{comment.body}</div>
