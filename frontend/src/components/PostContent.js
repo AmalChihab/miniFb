@@ -311,8 +311,8 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
 <div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto relative`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
       
-        <img
-          src={profilePictureSrc}
+      <img
+          src={ (user === JSON.parse(localStorage.getItem("user")).userName) ? profilePhoto : defaultProfilePhoto} 
           alt="Profile"
           className="w-10 h-10 rounded-full"
         />
