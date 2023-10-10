@@ -20,6 +20,9 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   const [profilePhoto, setProfilePhoto] = useState(null); 
   const [creatorInfo, setCreatorInfo] = useState(null); 
   const [loadingCreatorInfo, setLoadingCreatorInfo] = useState(true);
+  const [postReactions, setPostReactions] = useState([]);
+  const [loadingPostReactions, setLoadingPostReactions] = useState(true);
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -35,9 +38,13 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   };
 
 
+  
+
+
   useEffect(() => {
     ProfileService.getProfilePhoto(JSON.parse(localStorage.getItem('user')).userId)
       .then((imageDataUrl) => {
+        
         setProfilePhoto(imageDataUrl);
       })
       .catch((error) => {
@@ -96,6 +103,16 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         setLoadingCreatorInfo(false); // Set loading to false in case of an error
       });
       
+
+      ReactionService.getReactionsByPostId(post.id)
+      .then((response) => {
+        setPostReactions(response.data);
+        setLoadingPostReactions(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching post reactions:', error);
+        setLoadingPostReactions(false);
+      });
 
   }, [post.id]);
 
@@ -306,12 +323,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         console.error('Error deleting comment:', error);
       });
   };
-  
-
-  // Retrieve the user data and profile picture from local storage
-  const userData = JSON.parse(localStorage.getItem("user"));
-  const profilePictureData = userData.profilePicture;
-
 
   // Check if creatorInfo contains a valid photoUrl
   const hasProfilePicture = creatorInfo && creatorInfo.profilePicture;
@@ -414,7 +425,8 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         </div>
       )}
      <div className="absolute top-2 right-2 mx-4 py-2">
-        {creatorInfo && JSON.parse(localStorage.getItem("user")).userId === creatorInfo.userId && (
+
+     {creatorInfo && JSON.parse(localStorage.getItem("user")).userId === creatorInfo.userId && (
         <button
           onClick={toggleDropdown}
           className="text-gray-500 hover:text-gray-700 focus:outline-none"
