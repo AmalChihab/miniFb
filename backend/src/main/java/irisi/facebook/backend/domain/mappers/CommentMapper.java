@@ -48,6 +48,11 @@ public class CommentMapper {
                 .description(user.getUserDescription())
                 .name(user.getUserName())
                 .password(user.getUserPassword())
+                .birthday(user.getUserBirthday())
+                .phoneNumber(user.getUserPhoneNumber())
+                .gender(user.getUserGender())
+                .email(user.getUserEmail())
+                .profilePicture((user.getProfilePicture()))
                 .build();
     }
 
@@ -57,6 +62,11 @@ public class CommentMapper {
                 .userDescription(user.getUserDescription())
                 .userPassword(user.getUserPassword())
                 .userName(user.getUserName())
+                .userBirthday(user.getUserBirthday())
+                .userEmail(user.getUserEmail())
+                .userGender(user.getUserGender())
+                .userPhoneNumber(user.getUserPhoneNumber())
+                .profilePicture(user.getProfilePicture())
                 .build();
     }
 
@@ -66,6 +76,11 @@ public class CommentMapper {
                 .userDescription(userCommand.getUserDescription())
                 .userPassword(userCommand.getUserPassword())
                 .userName(userCommand.getUserName())
+                .userBirthday(userCommand.getUserBirthday())
+                .userEmail(userCommand.getUserEmail())
+                .userGender(userCommand.getUserGender())
+                .userPhoneNumber(userCommand.getUserPhoneNumber())
+                .profilePicture(userCommand.getProfilePicture())
                 .build();
     }
 
