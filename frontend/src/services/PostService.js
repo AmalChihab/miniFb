@@ -26,10 +26,6 @@ const PostService = {
     return axios.get(`${API_BASE_URL}/${postId}/creator`);
   },
 
-  getReactionsByPostId : (postId) => {
-    return axios.get(`${API_BASE_URL}/${postId}/reactions`);
-  },
-
 };
 
 export default PostService;
