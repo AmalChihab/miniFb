@@ -412,12 +412,14 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         </div>
       )}
      <div className="absolute top-2 right-2 mx-4 py-2">
+     {creatorInfo && JSON.parse(localStorage.getItem("user")).userId === creatorInfo.userId && (
         <button
           onClick={toggleDropdown}
           className="text-gray-500 hover:text-gray-700 focus:outline-none"
         >
             <FontAwesomeIcon icon={faEllipsisVertical} />
         </button>
+        )}
         {isDropdownOpen && (
           <div className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
             <div className="py-1">
