@@ -70,4 +70,8 @@ public class PostService {
         return "post deleted!";
     }
 
+    public Post getPostById(int postId) {
+        return postRepository.findById(postId).orElse(null);
+    }
+
 }
