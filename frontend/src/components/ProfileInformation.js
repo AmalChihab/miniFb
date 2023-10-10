@@ -84,7 +84,7 @@ const ProfileInformation = (props) => {
       <div className="flex items-center p-4">
         {/* Display the selected profile picture */}
         <img
-          src={profilePictureSrc}
+          src={profilePicture || defaultProfilePhoto}
           alt="Profile"
           className="w-12 h-12 rounded-full mr-2"
         />
