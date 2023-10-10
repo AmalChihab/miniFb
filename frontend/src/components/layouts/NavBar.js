@@ -1,11 +1,14 @@
 // Navbar.js
-import React from 'react';
+import React, {useEffect,useState} from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome } from '@fortawesome/free-solid-svg-icons'; 
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'; 
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import defaultProfilePhoto from '../../assets/images/default.jpg';
 import { useNavigate } from "react-router-dom";
+import ProfileService from '../../services/ProfileService';
+
 
 
 function Navbar() {
@@ -15,6 +18,20 @@ function Navbar() {
   const username = userString ? JSON.parse(userString).userName : null; // Check if username is not null
   const navigate = useNavigate();
   const isPostPage = location.pathname === '/posts';
+  const [profilePicture, setProfilePicture] = useState(null);
+   // Retrieve the user data and profile picture from local storage
+   const userData = JSON.parse(localStorage.getItem('user'));
+
+
+   useEffect(() => {
+    ProfileService.getProfilePhoto(userData.userId)
+      .then((imageDataUrl) => {
+        setProfilePicture(imageDataUrl);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile photo:', error);
+      });
+  }, [userData]);
 
   const iconHomeStyle = {
     color: '#EE2C4D',
@@ -49,7 +66,7 @@ function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate("/");
-  };
+  }; 
 
   return (
     <nav style={navbarStyle} className="p-4 flex justify-between items-center">
@@ -70,10 +87,17 @@ function Navbar() {
         <FontAwesomeIcon icon={faHome} className="h-6 w-6" />
       </Link>
 
-      <div className="text-black">
+      <div className="text-black" style={{ display: 'flex', alignItems: 'center' }}>
         {username ? (
           <Link to={`/profile/${username}/${userId}`} className={`font-semibold text-lg ${customFont}`}>
-          {username}
+           <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src={profilePicture || defaultProfilePhoto}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full mr-2"
+                />
+              {username}
+            </div>
           </Link>
         ) : null}
         <FontAwesomeIcon onClick={handleLogout} icon={faSignOutAlt} className="hover:text-pink-600 ml-6 h-6 w-6" />

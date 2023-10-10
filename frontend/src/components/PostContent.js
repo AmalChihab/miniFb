@@ -35,9 +35,13 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   };
 
 
+  
+
+
   useEffect(() => {
     ProfileService.getProfilePhoto(JSON.parse(localStorage.getItem('user')).userId)
       .then((imageDataUrl) => {
+        
         setProfilePhoto(imageDataUrl);
       })
       .catch((error) => {
@@ -306,12 +310,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         console.error('Error deleting comment:', error);
       });
   };
-  
-
-  // Retrieve the user data and profile picture from local storage
-  const userData = JSON.parse(localStorage.getItem("user"));
-  const profilePictureData = userData.profilePicture;
-
 
   // Check if creatorInfo contains a valid photoUrl
   const hasProfilePicture = creatorInfo && creatorInfo.profilePicture;
