@@ -2,6 +2,8 @@ package irisi.facebook.backend.api.ressources;
 
 import irisi.facebook.backend.api.common.ResourcePath;
 import irisi.facebook.backend.domain.command.PostCommand;
+import irisi.facebook.backend.domain.model.FBUser;
+import irisi.facebook.backend.domain.model.Post;
 import irisi.facebook.backend.domain.representations.PostRepresentation;
 import irisi.facebook.backend.services.PostService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,24 @@ public class PostResources {
     public ResponseEntity<List<PostRepresentation>> getAllPostsByUserId(@PathVariable int userId) {
         return ResponseEntity.ok(postService.getAllByUserId(userId));
     }
+
+    @GetMapping("/{postId}/creator")
+    public ResponseEntity<FBUser> getCreatorOfPost(@PathVariable int postId) {
+        Post post = postService.getPostById(postId);
+
+        if (post == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        FBUser creator = post.getPostOwner();
+
+        if (creator == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(creator);
+    }
+
 
     //method to save new post
     @PostMapping
