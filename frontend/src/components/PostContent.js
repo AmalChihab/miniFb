@@ -20,6 +20,9 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   const [profilePhoto, setProfilePhoto] = useState(null); 
   const [creatorInfo, setCreatorInfo] = useState(null); 
   const [loadingCreatorInfo, setLoadingCreatorInfo] = useState(true);
+  const [postReactions, setPostReactions] = useState([]);
+  const [loadingPostReactions, setLoadingPostReactions] = useState(true);
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -115,6 +118,16 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         setLoadingCreatorInfo(false); // Set loading to false in case of an error
       });
       
+
+      ReactionService.getReactionsByPostId(post.id)
+      .then((response) => {
+        setPostReactions(response.data);
+        setLoadingPostReactions(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching post reactions:', error);
+        setLoadingPostReactions(false);
+      });
 
   }, [post.id]);
 
@@ -432,6 +445,7 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         </div>
       )}
      <div className="absolute top-2 right-2 mx-4 py-2">
+
      {creatorInfo && JSON.parse(localStorage.getItem("user")).userId === creatorInfo.userId && (
         <button
           onClick={toggleDropdown}

@@ -29,4 +29,5 @@ public interface ReactionRepository extends JpaRepository<Reaction,Integer> {
     @Transactional
     @Query("DELETE FROM Reaction r WHERE r.postReaction.postId = :postId")
     void deleteReactionsByPostReaction_PostId(int postId);
+
 }
