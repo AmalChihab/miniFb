@@ -81,9 +81,24 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
 
     CommentService.getCommentsByPostId(post.id)
       .then((response) => {
-        setComments(response.data);
-        console.log("response data : ", response.data);
-        setLoadingComments(false); // Set loading to false once comments are loaded
+        const commentsWithProfilePics = response.data.map(async (comment) => {
+          // Fetch the profile picture for each commenter
+          const commenterProfilePhoto = await ProfileService.getProfilePhoto(comment.user.id)
+            .then((imageDataUrl) => imageDataUrl)
+            .catch((error) => {
+              console.error('Error fetching commenter profile photo:', error);
+              return defaultProfilePhoto; // Use default profile picture in case of an error
+            });
+  
+          // Update the comment object to include the profile picture
+          return { ...comment, commenterProfilePhoto };
+        });
+  
+        // Set the comments state with profile pictures
+        Promise.all(commentsWithProfilePics).then((commentsWithPics) => {
+          setComments(commentsWithPics);
+          setLoadingComments(false); // Set loading to false once comments are loaded
+        });
       })
       .catch((error) => {
         console.log('Error fetching comments:', error);
@@ -320,7 +335,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   : defaultProfilePhoto; // Assuming defaultProfilePhoto is a URL to the default picture
 
 
-
   return (
 <div className={`w-${width} h-${height} bg-white p-4 mb-4 rounded-lg shadow-md mx-auto relative`} style={{ maxWidth: '752px' }}>
       <div className="flex items-center space-x-2 mb-2">
@@ -374,22 +388,28 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
       ) : (
         <div>
           {comments.map((comment) => (
-            <div key={comment.id} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', wordWrap: 'break-word', fontFamily: 'cursive' }}>
-              <div className="font-semibold">{comment.user.name}</div>
-              <div>{comment.body}</div>
-              {/* Add a delete button */}
-              {comment.user.id === JSON.parse(localStorage.getItem('user')).userId && (
-                // Display delete button only if the comment belongs to the current user
-                <button
-                className="text-red-400 hover:text-red-700 mt-2"
-                onClick={() => handleCommentDelete(comment.id)}
-                style={{ fontSize: '12px', fontFamily: 'cursive' }}
-              >
-                Delete Comment
-              </button>
-              
-              )}
-            </div>
+      <div key={comment.id} className="rounded-lg p-3 mt-2" style={{ backgroundColor: '#F9F9F9', wordWrap: 'break-word', fontFamily: 'cursive' }}>
+        <div className="flex items-center space-x-2">
+          <img
+            src={`data:image/jpeg;base64,${comment.user.profilePicture}`} // Use commenter's profile picture or default picture
+            alt="Profile"
+            className="w-10 h-10 rounded-full"
+          />
+          <div className="font-semibold">{comment.user.name}</div>
+        </div>
+        <div>{comment.body}</div>
+        {/* Add a delete button */}
+        {comment.user.id === JSON.parse(localStorage.getItem('user')).userId && (
+          // Display delete button only if the comment belongs to the current user
+          <button
+            className="text-red-400 hover:text-red-700 mt-2"
+            onClick={() => handleCommentDelete(comment.id)}
+            style={{ fontSize: '12px', fontFamily: 'cursive' }}
+          >
+            Delete Comment
+          </button>
+        )}
+      </div>
           ))}
           {/* Comment section */}
           <div className="mt-2">
