@@ -2,12 +2,13 @@ import React, { useState, useEffect  } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faComment } from '@fortawesome/free-solid-svg-icons';
 import ReactionService from '../services/ReactionService';
+import PostService from '../services/PostService';
 import CommentService from '../services/CommentService'; 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import defaultProfilePhoto from '../assets/images/default.jpg';
 import ProfileService from '../services/ProfileService';
 
-const PostContent = ({ post, user, width, height, onDelete }) => {
+const PostContent = ({ post, user, width, height, onDelete}) => {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -17,6 +18,8 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
   const [loadingComments, setLoadingComments] = useState(true);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState(null); 
+  const [creatorInfo, setCreatorInfo] = useState(null); 
+  const [loadingCreatorInfo, setLoadingCreatorInfo] = useState(true);
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -82,6 +85,17 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
         console.log('Error fetching comments:', error);
         setLoadingComments(false); // Set loading to false in case of an error
       });
+
+      PostService.getCreatorOfPost(post.id)
+      .then((response) => {
+        setCreatorInfo(response.data); // Update the state with the number of likes
+        setLoadingCreatorInfo(false); // Set loading to false once creatorInfo is loaded
+      })
+      .catch((error) => {
+        console.log("Error fetching creator of the post:", error);
+        setLoadingCreatorInfo(false); // Set loading to false in case of an error
+      });
+      
 
   }, [post.id]);
 
@@ -298,13 +312,15 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
   const userData = JSON.parse(localStorage.getItem("user"));
   const profilePictureData = userData.profilePicture;
 
-  // Check if profilePictureData is null or empty
-  const hasProfilePicture = profilePictureData && profilePictureData.length > 0;
 
-  // Construct the data URI for the profile picture or use the default picture
-  const profilePictureSrc = hasProfilePicture
-    ? `data:image/jpeg;base64,${profilePictureData}`
-    : defaultProfilePhoto; // Assuming defaultProfilePhoto is a URL to the default picture
+  // Check if creatorInfo contains a valid photoUrl
+  const hasProfilePicture = creatorInfo && creatorInfo.profilePicture;
+
+// Construct the data URI for the creator's profile picture or use the default picture
+ const profilePictureSrc = hasProfilePicture
+  ? `data:image/jpeg;base64,${creatorInfo.profilePicture}` // Assuming creatorInfo.photoUrl contains the URL to the creator's profile picture
+  : defaultProfilePhoto; // Assuming defaultProfilePhoto is a URL to the default picture
+
 
 
   return (
@@ -312,13 +328,16 @@ const PostContent = ({ post, user, width, height, onDelete }) => {
       <div className="flex items-center space-x-2 mb-2">
       
       <img
-          src={ (user === JSON.parse(localStorage.getItem("user")).userName) ? profilePhoto : defaultProfilePhoto} 
-          alt="Profile"
-          className="w-10 h-10 rounded-full"
-        />
+         src={profilePictureSrc}
+         alt="Profile"
+         className="w-10 h-10 rounded-full"
+/>
+
         
-        <div className="text-blue-500 font-semibold">{user}</div>
-        <div className="text-gray-400">posted a post</div>
+        {!loadingCreatorInfo && (
+          <div className="text-blue-500 font-semibold">{creatorInfo.userName}</div>
+        )}
+          <div className="text-gray-400">posted a post</div>
       </div>
       <p style={{fontFamily:'cursive'}}>{post.body}</p>
 

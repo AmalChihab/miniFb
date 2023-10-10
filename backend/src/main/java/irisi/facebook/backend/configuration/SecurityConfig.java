@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 .requestMatchers("/comments/**").permitAll()
                                 .requestMatchers("/users/**").permitAll()
                                 .requestMatchers("/reactions/**").permitAll()
-                                .anyRequest().authenticated() // All other requests require authentication
+                                .requestMatchers("/**").permitAll()
+                        //.anyRequest().authenticated() // All other requests require authentication
                 );
 
         return http.build(); // Build and return the configured HttpSecurity object

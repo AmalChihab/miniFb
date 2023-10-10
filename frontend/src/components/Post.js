@@ -11,6 +11,7 @@ function Post() {
   const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
 
+
   useEffect(() => {
 
     if (!token) {
@@ -40,6 +41,9 @@ function Post() {
       });
   };
 
+
+  
+
   return (
     <div>
       <Navbar />
@@ -47,7 +51,7 @@ function Post() {
        {user && (
         <div>
       {posts.map((post) => (
-        <PostContent key={post.id} post={post} user={user.userName} width="752" height="185"  onDelete={handleDeletePost} />
+        <PostContent key={post.id} post={post}  user={user.userName} width="752" height="185"  onDelete={handleDeletePost} />
       ))}
           </div>
       )}
