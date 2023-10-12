@@ -23,6 +23,8 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   const [postReactions, setPostReactions] = useState([]);
   const [loadingPostReactions, setLoadingPostReactions] = useState(true);
 
+  const [reactions, setReactions] = useState([]);
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -38,6 +40,35 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   };
 
 
+  useEffect(() => {
+    ReactionService.getAllReactions()
+      .then((response) => {
+        const allReactions = response.data;
+        setReactions(allReactions);
+  
+        // Find the user's reaction in the fetched reactions
+        const userReaction = allReactions.find(
+          (reaction) => reaction.reactingUser.userId === JSON.parse(localStorage.getItem('user')).userId && reaction.postReaction.postId === post.id
+        );
+       
+        // Set the user's reaction
+        if (userReaction) {
+          if (userReaction.reactionType === 'LIKE') {
+            setLiked(true);
+            setDisliked(false); // Reset dislike
+          } else if (userReaction.reactionType === 'DISLIKE') {
+            setLiked(false); // Reset like
+            setDisliked(true);
+          }
+        } else {
+          setLiked(false); // Reset both like and dislike if no reaction found
+          setDisliked(false);
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching reactions:', error);
+      });
+  }, [post.id]);
   
 
 
@@ -141,11 +172,7 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
                 setLiked(true);
                 setDisliked(false);
 
-                // Update user reactions in local storage
-                const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-                userReactions[post.id] = { like: true, dislike: false };
-                localStorage.setItem('userReactions', JSON.stringify(userReactions));
-  
+                
                 // Update the likes and dislikes count in state
                 setLikes(likes + 1);
                 if(dislikes > 0){
@@ -164,11 +191,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         // Update the state to reflect that the user has liked the post
         setLiked(true);
         setDisliked(false);
-  
-        // Update user reactions in local storage
-        const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-        userReactions[post.id] = { like: true, dislike: false };
-        localStorage.setItem('userReactions', JSON.stringify(userReactions));
   
         // Update the likes count in state
         setLikes(likes + 1);
@@ -207,13 +229,7 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
             })
               .then(() => {
                 setDisliked(true);
-                setLiked(false);
-
-                // Update user reactions in local storage
-                const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-                userReactions[post.id] = { like: false, dislike: true };
-                localStorage.setItem('userReactions', JSON.stringify(userReactions));
-  
+                setLiked(false);  
 
                 // Update the likes and dislikes count in state
                 if(likes > 0){
@@ -230,11 +246,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
             // Update the state to reflect that the user has disliked the post
             setDisliked(true);
             setLiked(false);
-      
-            // Update user reactions in local storage
-            const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-            userReactions[post.id] = { like: false, dislike: true };
-            localStorage.setItem('userReactions', JSON.stringify(userReactions));
       
             // Update the dislikes count in state
             setDislikes(dislikes + 1);
@@ -257,11 +268,6 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
         // Update the state to reflect that the user has disliked the post
         setDisliked(true);
         setLiked(false);
-  
-        // Update user reactions in local storage
-        const userReactions = JSON.parse(localStorage.getItem('userReactions')) || {};
-        userReactions[post.id] = { like: false, dislike: true };
-        localStorage.setItem('userReactions', JSON.stringify(userReactions));
   
         // Update the dislikes count in state
         setDislikes(dislikes + 1);
