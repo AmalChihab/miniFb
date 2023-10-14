@@ -5,20 +5,21 @@ class Chat extends Component {
     super(props);
     this.state = {
       scriptLoaded: false,
+      hasError: false, // Add a state variable to track errors
     };
   }
 
   loadKommunicateScript() {
     const kommunicateSettings = {
-      appId: "2fab23136c4ab8c3a15499d7e8f3a463c",
+      appId: '2fab23136c4ab8c3a15499d7e8f3a463c',
       popupWidget: true,
       automaticChatOpenOnNavigation: true,
     };
-    const s = document.createElement("script");
-    s.type = "text/javascript";
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
     s.async = true;
-    s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
-    const h = document.getElementsByTagName("head")[0];
+    s.src = 'https://widget.kommunicate.io/v2/kommunicate.app';
+    const h = document.getElementsByTagName('head')[0];
     h.appendChild(s);
     window.kommunicate = this;
     this._globals = kommunicateSettings;
@@ -26,37 +27,32 @@ class Chat extends Component {
   }
 
   componentDidMount() {
-    console.log("componentDidMount: Script loading attempt");
-    this.loadKommunicateScript();
-  }
-
-  componentDidUpdate() {
-    if (!this.state.scriptLoaded) {    
-        console.log("componentDidUpdate: Script loading attempt");
+    // Check if the script is already loaded
+    if (!window.kommunicate) {
+      // Load the script only if it hasn't been loaded yet
       this.loadKommunicateScript();
+    } else {
+      this.setState({ scriptLoaded: true });
     }
   }
 
-  componentWillUnmount() {
-    // Remove or unload the Kommunicate script or related objects
-    // This can include resetting any global variables or removing event listeners.
-    
-    // Example:
-    
-    // Remove the Kommunicate script tag
-    const script = document.querySelector("script[src='https://widget.kommunicate.io/v2/kommunicate.app']");
-    if (script) {
-      script.remove();
-    }
-    
-    // Reset the global variables
-    window.kommunicate = undefined;
-    
-    // Clear any other references or resources related to Kommunicate
+  // Catch and handle errors
+  componentDidCatch(error, info) {
+    console.error('Error in Chat component:', error, info);
+    this.setState({ hasError: true });
   }
-  
 
   render() {
+    // Check if there's an error; if so, do not render the component
+    if (this.state.hasError) {
+      return null; // Do not render the component
+    }
+
+    // Check if the script is still loading
+    if (!this.state.scriptLoaded) {
+      return <div>Loading...</div>;
+    }
+
     return (
       <div>
         {/* Your chat component content */}

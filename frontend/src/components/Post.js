@@ -4,6 +4,7 @@ import Navbar from './layouts/NavBar';
 import CreateNewPost from './CreateNewPost';
 import PostContent from './PostContent';
 import { useNavigate } from "react-router-dom";
+import Chat from './Chat';
 
 function Post() {
   const [posts, setPosts] = useState([]);
@@ -55,6 +56,7 @@ function Post() {
       ))}
           </div>
       )}
+      <Chat />
     </div>
   );
 }
