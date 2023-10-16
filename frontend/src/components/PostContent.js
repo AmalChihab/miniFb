@@ -294,34 +294,47 @@ const PostContent = ({ post, user, width, height, onDelete}) => {
   };
 
   const handleCommentSubmit = () => {
-    console.log("the user : ",JSON.parse(localStorage.getItem('user')))
-    if (commentText) {
-      // Prepare the data for the new comment
-      const newCommentData = {
-        body: commentText,
-        user: JSON.parse(localStorage.getItem('user')),
-        post: post,
-      };
+    console.log("the user : ", JSON.parse(localStorage.getItem('user')));
   
-      // Call your service's method to create a new comment
-      CommentService.createComment(newCommentData)
-        .then((response) => {
-          // Handle the response, e.g., show a success message or update the UI
-          console.log('Comment created successfully:', response.data);
+    // Trim the comment text to remove leading and trailing whitespace
+    const trimmedCommentText = commentText.trim();
   
-          // Update the comments state to include the new comment
-          setComments((prevComments) => [...prevComments, response.data]);
+    if (trimmedCommentText) {
+      // Check if the trimmed comment text contains non-whitespace characters
+      const hasNonWhitespaceCharacters = /\S/.test(trimmedCommentText);
   
-          // Clear the comment input field
-          setCommentText('');
-        })
-        .catch((error) => {
-          // Handle any errors, e.g., show an error message or log the error
-          console.error('Error creating comment:', error);
-        });
+      if (hasNonWhitespaceCharacters) {
+        // Prepare the data for the new comment
+        const newCommentData = {
+          body: trimmedCommentText,
+          user: JSON.parse(localStorage.getItem('user')),
+          post: post,
+        };
+  
+        // Call your service's method to create a new comment
+        CommentService.createComment(newCommentData)
+          .then((response) => {
+            // Handle the response, e.g., show a success message or update the UI
+            console.log('Comment created successfully:', response.data);
+  
+            // Update the comments state to include the new comment
+            setComments((prevComments) => [...prevComments, response.data]);
+  
+            // Clear the comment input field
+            setCommentText('');
+          })
+          .catch((error) => {
+            // Handle any errors, e.g., show an error message or log the error
+            console.error('Error creating comment:', error);
+          });
+      } else {
+        // Handle the case where the comment text contains only spaces and indentations
+        // You can show an error message or prevent submission
+        console.error('Comment contains only spaces and indentations.');
+      }
     }
   };
-
+  
   const handleCommentDelete = (commentId) => {
     // Call your service's method to delete the comment by ID
     CommentService.deleteComment(commentId)

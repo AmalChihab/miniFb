@@ -87,6 +87,7 @@ function Register() {
                 type="text"
                 placeholder="Username"
                 value={userName}
+                required
                 onChange={(e) => setUserName(e.target.value)}
                 className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-pink-500"
               />
@@ -96,6 +97,7 @@ function Register() {
                 type="password"
                 placeholder="Password"
                 value={userPassword}
+                required
                 onChange={(e) => setUserPassword(e.target.value)}
                 className="w-full border-b-2 mt-3 border-gray-300 focus:outline-none focus:border-pink-500"
               />
@@ -106,6 +108,7 @@ function Register() {
               type="email"
               placeholder="Email"
               value={userEmail}
+              required
               onChange={(e) => setUserEmail(e.target.value)}
               className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-pink-500"
             />
@@ -115,6 +118,7 @@ function Register() {
               type="text"
               placeholder="Description"
               value={userDescription}
+              required
               onChange={(e) => setUserDescription(e.target.value)}
               className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-pink-500"
             />
@@ -124,6 +128,7 @@ function Register() {
               type="date"
               placeholder="Birthday"
               value={userBirthday}
+              required
               onChange={(e) => setUserBirthday(e.target.value)}
               className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-pink-500"
             />
@@ -133,6 +138,7 @@ function Register() {
               type="tel"
               placeholder="Phone Number"
               value={userPhoneNumber}
+              required
               onChange={(e) => setUserPhoneNumber(e.target.value)}
               className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-pink-500"
             />
@@ -140,6 +146,7 @@ function Register() {
           <div className="mb-8">
             <select
               value={userGender}
+              required
               onChange={(e) => setUserGender(e.target.value)}
               className="w-full border-b-2 border-gray-300 focus:outline-none focus:border-pink-500"
             >
